@@ -8,14 +8,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { useNavigate } from "react-router";
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { AuthContext } from "../../contexts/authContext";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
-
 
 const SiteHeader = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -27,24 +26,41 @@ const SiteHeader = () => {
 
   const { isAuthenticated, userName, signout } = useContext(AuthContext);
 
+  const handleMenu = (event) => setAnchorEl(event.currentTarget);
+  const closeMenu = () => setAnchorEl(null);
+
   const handleLogout = () => {
     signout();
     navigate("/");
   };
 
-  const menuOptions = [
+  const baseOptions = [
     { label: "Home", path: "/" },
     { label: "Trending Movies", path: "/movies/trending" },
     { label: "Now Playing", path: "/movies/now-playing" },
-    ...(isAuthenticated ? [{ label: "Favorites", path: "/movies/favorites" }] : []),
   ];
 
-  const handleMenuSelect = (pageURL) => {
-    setAnchorEl(null);
-    navigate(pageURL);
-  };
+  const authOptions = isAuthenticated
+    ? [
+        { label: "Favorites", path: "/movies/favorites" },
+        { label: "Profile", path: "/profile" },
+        { label: "Logout", action: "logout" },
+      ]
+    : [
+        { label: "Login", path: "/login" },
+        { label: "Signup", path: "/signup" },
+      ];
 
-  const handleMenu = (event) => setAnchorEl(event.currentTarget);
+  const menuOptions = [...baseOptions, ...authOptions];
+
+  const handleSelect = (opt) => {
+    closeMenu();
+    if (opt.action === "logout") {
+      handleLogout();
+    } else {
+      navigate(opt.path);
+    }
+  };
 
   return (
     <>
@@ -66,54 +82,49 @@ const SiteHeader = () => {
                 <MenuIcon />
               </IconButton>
 
-              <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={() => setAnchorEl(null)}
-              >
+              <Menu anchorEl={anchorEl} open={open} onClose={closeMenu}>
                 {menuOptions.map((opt) => (
-                  <MenuItem key={opt.label} onClick={() => handleMenuSelect(opt.path)}>
+                  <MenuItem key={opt.label} onClick={() => handleSelect(opt)}>
                     {opt.label}
                   </MenuItem>
                 ))}
-
-                {!isAuthenticated ? (
-                  <>
-                    <MenuItem onClick={() => handleMenuSelect("/login")}>Login</MenuItem>
-                    <MenuItem onClick={() => handleMenuSelect("/signup")}>Signup</MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem onClick={() => handleMenuSelect("/profile")}>Profile</MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        setAnchorEl(null);
-                        handleLogout();
-                      }}
-                    >
-                      Logout
-                    </MenuItem>
-                  </>
-                )}
               </Menu>
             </>
           ) : (
             <>
-              {menuOptions.map((opt) => (
-                <Button key={opt.label} color="inherit" onClick={() => handleMenuSelect(opt.path)}>
+              {baseOptions.map((opt) => (
+                <Button
+                  key={opt.label}
+                  color="inherit"
+                  onClick={() => navigate(opt.path)}
+                >
                   {opt.label}
                 </Button>
               ))}
 
               {!isAuthenticated ? (
                 <>
-                  <Button color="inherit" onClick={() => navigate("/login")}>Login</Button>
-                  <Button color="inherit" onClick={() => navigate("/signup")}>Signup</Button>
+                  <Button color="inherit" onClick={() => navigate("/login")}>
+                    Login
+                  </Button>
+                  <Button color="inherit" onClick={() => navigate("/signup")}>
+                    Signup
+                  </Button>
                 </>
               ) : (
                 <>
-                  <Button color="inherit" onClick={() => navigate("/profile")}>Profile</Button>
-                  <Button color="inherit" onClick={handleLogout}>Logout</Button>
+                  <Button
+                    color="inherit"
+                    onClick={() => navigate("/movies/favorites")}
+                  >
+                    Favorites
+                  </Button>
+                  <Button color="inherit" onClick={() => navigate("/profile")}>
+                    Profile
+                  </Button>
+                  <Button color="inherit" onClick={handleLogout}>
+                    Logout
+                  </Button>
                 </>
               )}
             </>
@@ -126,4 +137,3 @@ const SiteHeader = () => {
 };
 
 export default SiteHeader;
-

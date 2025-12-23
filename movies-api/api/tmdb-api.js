@@ -42,6 +42,26 @@ export const getGenres = async () => {
   return await response.json();
 };
 
+export const getMovieImages = async (id) => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}/images?api_key=${process.env.TMDB_KEY}`
+  );
+  if (!response.ok) throw new Error((await response.json()).message);
+  return await response.json();
+};
+
+export const getMovieReviews = async (id) => {
+  const response = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.TMDB_KEY}`
+  );
+  if (!response.ok) throw new Error((await response.json()).message);
+  return await response.json();
+};
+
+
+
+
+
 
 
 

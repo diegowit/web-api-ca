@@ -6,6 +6,8 @@ import {
   getNowPlayingMovies,
   getMovie,
   getGenres,
+  getMovieImages,
+  getMovieReviews,
 } from "../tmdb-api.js";
 
 const router = express.Router();
@@ -32,6 +34,17 @@ router.get('/genres', asyncHandler(async (req, res) => {
   res.status(200).json(genres);
 }));
 
+router.get("/:id/images", asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const images = await getMovieImages(id);
+  res.status(200).json(images);
+}));
+
+router.get("/:id/reviews", asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const reviews = await getMovieReviews(id);
+  res.status(200).json(reviews);
+}));
 
 router.get("/:id", asyncHandler(async (req, res) => {
   const { id } = req.params;
