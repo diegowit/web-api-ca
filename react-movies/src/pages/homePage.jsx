@@ -4,40 +4,37 @@ import PageTemplate from '../components/templateMovieListPage';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '../components/spinner';
 import AddToFavoritesIcon from '../components/cardIcons/addToFavorites';
+import { Link } from "react-router";
 
 
-const HomePage = (props) => {
-
+const HomePage = () => {
   const { data, error, isPending, isError } = useQuery({
-    queryKey: ['discover'],
+    queryKey: ["discover"],
     queryFn: getMovies,
-  })
+  });
 
-  if (isPending) {
-    return <Spinner />
-  }
-
-  if (isError) {
-    return <h1>{error.message}</h1>
-  }
+  if (isPending) return <Spinner />;
+  if (isError) return <h1>{error.message}</h1>;
 
   const movies = data.results;
 
-  // Redundant, but necessary to avoid app crashing.
-  const favorites = movies.filter(m => m.favorite)
-  localStorage.setItem('favorites', JSON.stringify(favorites))
-  const addToFavorites = (movieId) => true
-
   return (
-    <PageTemplate
-      title="Discover Movies"
-      movies={movies}
-      action={(movie) => {
-        return <AddToFavoritesIcon movie={movie} />
-      }}
-    />
-  );
+    <>
+      <div style={{ marginBottom: "1rem" }}>
+        <p>
+          Welcome to the Movies App!{" "}
+          <Link to="/login">Login</Link> or{" "}
+          <Link to="/signup">Signup</Link> to save favourites and reviews.
+        </p>
+      </div>
 
+      <PageTemplate
+        title="Discover Movies"
+        movies={movies}
+        action={(movie) => <AddToFavoritesIcon movie={movie} />}
+      />
+    </>
+  );
 };
 
 export default HomePage;
