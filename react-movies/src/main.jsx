@@ -22,6 +22,8 @@ import MoviesContextProvider from "./contexts/moviesContext";
 import AuthContextProvider from "./contexts/authContext";
 import ProtectedRoutes from "./protectedRoutes";
 
+
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
