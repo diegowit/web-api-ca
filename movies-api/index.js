@@ -3,10 +3,12 @@ import express from 'express';
 import cors from 'cors';
 
 import './db/index.js';
-//import authenticate from './authenticate';
+import authenticate from './authenticate';
 
 import moviesRouter from './api/movies';   
 import usersRouter from './api/users';
+import reviewsRouter from "./api/reviews/index.js";
+
 
 dotenv.config();
 
@@ -23,7 +25,8 @@ app.use(express.json());
 
 app.use('/api/users', usersRouter);
 app.use('/api/movies', moviesRouter);
-
+app.use("/api/reviews/movie", reviewsRouter);
+app.use("/api/reviews", authenticate, reviewsRouter);
 
 
 app.use(errHandler);  
