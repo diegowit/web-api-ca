@@ -2,43 +2,102 @@ import { useContext, useState } from "react";
 import { Navigate } from "react-router";
 import { AuthContext } from '../contexts/authContext';
 
+import {
+  Container,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  Box
+} from "@mui/material";
+
 const SignUpPage = () => {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
+
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
   const [registered, setRegistered] = useState(false);
-  
+
   const register = async () => {
-    let passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    let passwordRegEx =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
     const validPassword = passwordRegEx.test(password);
 
     if (validPassword && password === passwordAgain) {
       let result = await context.register(userName, password);
       setRegistered(result);
     }
-  }
+  };
 
   if (registered === true) {
     return <Navigate to="/login" />;
   }
 
   return (
-    <>
-      <h2>SignUp page</h2>
-      <p>You must register a username and password to log in. Usernames must be unique and passwords must contain a minimum of 8 characters (with at least one uppercase letter, one lowercase letter, and one symbol). </p>
-      <input value={userName} placeholder="user name" onChange={e => {
-        setUserName(e.target.value);
-      }}></input><br />
-      <input value={password} type="password" placeholder="password" onChange={e => {
-        setPassword(e.target.value);
-      }}></input><br />
-      <input value={passwordAgain} type="password" placeholder="password again" onChange={e => {
-        setPasswordAgain(e.target.value);
-      }}></input><br />
-      {/* Login web form  */}
-      <button onClick={register}>Register</button>
-    </>
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          minHeight: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Paper elevation={4} sx={{ p: 4, width: "100%" }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Sign Up
+          </Typography>
+
+          <Typography
+            variant="body2"
+            align="center"
+            color="text.secondary"
+            sx={{ mb: 2 }}
+          >
+            Create an account to save favourites and reviews.
+          </Typography>
+
+          <TextField
+            label="Username"
+            fullWidth
+            margin="normal"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+          />
+
+          <TextField
+            label="Password"
+            type="password"
+            fullWidth
+            margin="normal"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            helperText="Min 8 chars, 1 number & 1 symbol"
+          />
+
+          <TextField
+            label="Confirm Password"
+            type="password"
+            fullWidth
+            margin="normal"
+            value={passwordAgain}
+            onChange={(e) => setPasswordAgain(e.target.value)}
+          />
+
+          <Button
+            variant="contained"
+            color="secondary"
+            fullWidth
+            sx={{ mt: 2 }}
+            onClick={register}
+          >
+            Register
+          </Button>
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 
