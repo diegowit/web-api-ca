@@ -19,6 +19,9 @@ import ProfilePage from "./pages/profilePage";
 import SiteHeader from "./components/siteHeader";
 import MoviesContextProvider from "./contexts/moviesContext";
 
+import AuthContextProvider from "./contexts/authContext";
+import ProtectedRoutes from "./protectedRoutes";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -34,22 +37,36 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <MoviesContextProvider>
-          <SiteHeader />
+          <AuthContextProvider>
+            <SiteHeader />
 
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
-            <Route path="/movies/trending" element={<TrendingMoviePage />} />
-            <Route path="/movies/now-playing" element={<NowPlayingMoviesPage />} />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/movies/trending" element={<TrendingMoviePage />} />
+              <Route
+                path="/movies/now-playing"
+                element={<NowPlayingMoviesPage />}
+              />
 
-            <Route path="/movies/:id" element={<MoviePage />} />
-            <Route path="/reviews/:id" element={<MovieReviewPage />} />
-            <Route path="/reviews/form" element={<AddMovieReviewPage />} />
+              <Route path="/movies/:id" element={<MoviePage />} />
+              <Route path="/reviews/:id" element={<MovieReviewPage />} />
+              <Route path="/reviews/form" element={<AddMovieReviewPage />} />
 
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+
+              {/* Protected routes */}
+              <Route element={<ProtectedRoutes />}>
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route
+                  path="/movies/favorites"
+                  element={<FavoriteMoviesPage />}
+                />
+              </Route>
+
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </AuthContextProvider>
         </MoviesContextProvider>
       </BrowserRouter>
 
