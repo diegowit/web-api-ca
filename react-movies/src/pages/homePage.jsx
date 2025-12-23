@@ -25,6 +25,7 @@ const HomePage = () => {
           Welcome to the Movies App!{" "}
           <Link to="/login">Login</Link> or{" "}
           <Link to="/signup">Signup</Link> to save favourites and reviews.
+          <Link to="/profile">Profile</Link> Login to see your profile.
         </p>
       </div>
 
