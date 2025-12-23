@@ -21,12 +21,7 @@ const HomePage = () => {
   return (
     <>
       <div style={{ marginBottom: "1rem" }}>
-        <p>
-          Welcome to the Movies App!{" "}
-          <Link to="/login">Login</Link> or{" "}
-          <Link to="/signup">Signup</Link> to save favourites and reviews.
-          <Link to="/profile">Profile</Link>see your profile.
-        </p>
+       
       </div>
 
       <PageTemplate
