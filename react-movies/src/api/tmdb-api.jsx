@@ -144,3 +144,31 @@ export const signup = async (username, password) => {
 
   return response.json();
 };
+
+/**********************Reviews************************ */
+export const addReview = async (data) => {
+  const res = await fetch("http://localhost:8080/api/reviews", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: window.localStorage.getItem("token"),
+    },
+    body: JSON.stringify(data),
+  });
+  return res.json();
+};
+
+export const getReviewsForMovie = async (movieId) => {
+  const res = await fetch(`http://localhost:8080/api/reviews/movie/${movieId}`);
+  return res.json();
+};
+
+
+export const getMyReviews = async () => {
+  const res = await fetch("http://localhost:8080/api/reviews/me", {
+    headers: {
+      Authorization: window.localStorage.getItem("token"),
+    },
+  });
+  return res.json();
+};

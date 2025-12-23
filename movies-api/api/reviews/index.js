@@ -22,15 +22,15 @@ export default router;
 
 
 // GET all reviews for a given movie (and this is public)
-router.get(
-  "/movie/:movieId",
-  asyncHandler(async (req, res) => {
+router.get("/movie/:movieId", async (req, res, next) => {
+  try {
     const movieId = Number(req.params.movieId);
     const reviews = await Review.find({ movieId }).sort({ createdAt: -1 });
-    res.status(200).json(reviews);
-  })
-);
-
+    return res.status(200).json(reviews);
+  } catch (err) {
+    next(err);
+  }
+});
 
 
 

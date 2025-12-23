@@ -2,42 +2,93 @@ import { useContext, useState } from "react";
 import { Navigate, useLocation } from "react-router";
 import { AuthContext } from '../contexts/authContext';
 import { Link } from "react-router";
+import {
+  Container,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  Box
+} from "@mui/material";
 
 const LoginPage = () => {
-    const context = useContext(AuthContext);
+  const context = useContext(AuthContext);
 
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
 
-    const login = () => {
-        context.authenticate(userName, password);
-    };
+  const login = () => {
+    context.authenticate(userName, password);
+  };
 
-    let location = useLocation();
+  let location = useLocation();
+  const { from } = location.state
+    ? { from: location.state.from.pathname }
+    : { from: "/" };
 
-    // Set 'from' to path where browser is redirected after a successful login - either / or the protected path user requested
-    const { from } = location.state ? { from: location.state.from.pathname } : { from: "/" };
+  if (context.isAuthenticated === true) {
+    return <Navigate to={from} />;
+  }
 
-    if (context.isAuthenticated === true) {
-        return <Navigate to={from} />;
-    }
+  return (
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          minHeight: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Paper elevation={4} sx={{ p: 4, width: "100%" }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Login
+          </Typography>
 
-    return (
-        <>
-            <h2>Login page</h2>
-            <p>You must log in to view the protected pages </p>
-            <input id="username" placeholder="user name" onChange={e => {
-                setUserName(e.target.value);
-            }}></input><br />
-            <input id="password" type="password" placeholder="password" onChange={e => {
-                setPassword(e.target.value);
-            }}></input><br />
-            {/* Login web form  */}
-            <button onClick={login}>Log in</button>
-            <p>Not Registered?
-                <Link to="/signup">Sign Up!</Link></p>
-        </>
-    );
+          <Typography
+            variant="body2"
+            align="center"
+            color="text.secondary"
+            sx={{ mb: 2 }}
+          >
+            You must log in to view protected pages
+          </Typography>
+
+          <TextField
+            label="Username"
+            fullWidth
+            margin="normal"
+            onChange={(e) => setUserName(e.target.value)}
+          />
+
+          <TextField
+            label="Password"
+            type="password"
+            fullWidth
+            margin="normal"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <Button
+            variant="contained"
+            color="secondary"
+            fullWidth
+            sx={{ mt: 2 }}
+            onClick={login}
+          >
+            Log in
+          </Button>
+
+          <Typography align="center" sx={{ mt: 2 }}>
+            Not registered?{" "}
+            <Link to="/signup" style={{ textDecoration: "none" }}>
+              Sign up
+            </Link>
+          </Typography>
+        </Paper>
+      </Box>
+    </Container>
+  );
 };
 
 export default LoginPage;

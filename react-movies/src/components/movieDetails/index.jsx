@@ -8,8 +8,13 @@ import NavigationIcon from "@mui/icons-material/Navigation";
 import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
-import MovieReviews from "../movieReviews"
 import LanguageIcon from '@mui/icons-material/Language';
+
+
+import { useQuery } from "@tanstack/react-query";
+import { getReviewsForMovie } from "../../api/tmdb-api";
+
+
 
 
 const root = {
@@ -24,6 +29,16 @@ const chip = { margin: 0.5 };
 
 const MovieDetails = ({ movie }) => {  // Don't miss this!
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const {
+  data: reviews = [],
+  isPending: reviewsLoading,
+  isError: reviewsIsError,
+  error: reviewsError,
+} = useQuery({
+  queryKey: ["movieReviews", movie.id],
+  queryFn: () => getReviewsForMovie(movie.id),
+  enabled: !!movie?.id, // prevents running before movie is loaded
+});
 
   return (
     <>
@@ -107,7 +122,35 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
         Reviews
       </Fab>
       <Drawer anchor="top" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <MovieReviews movie={movie} />
+       <div style={{ padding: "1rem" }}>
+  <Typography variant="h5" component="h3" sx={{ mb: 2 }}>
+    Reviews for {movie.title}
+  </Typography>
+
+  {reviewsLoading && <Typography>Loading reviews...</Typography>}
+
+  {reviewsIsError && (
+    <Typography color="error">
+      {reviewsError?.message || "Error loading reviews"}
+    </Typography>
+  )}
+
+  {!reviewsLoading && !reviewsIsError && reviews.length === 0 && (
+    <Typography>No reviews yet.</Typography>
+  )}
+
+  {reviews.map((r) => (
+    <Paper key={r._id} sx={{ p: 2, mb: 2 }}>
+      <Typography variant="subtitle1">
+        <strong>{r.userName}</strong> — ⭐ {r.rating}/10
+      </Typography>
+      <Typography variant="body1">{r.review}</Typography>
+      <Typography variant="caption" color="text.secondary">
+        {new Date(r.createdAt).toLocaleString()}
+      </Typography>
+    </Paper>
+  ))}
+</div>
       </Drawer>
 
     </>
